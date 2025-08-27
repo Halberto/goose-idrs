@@ -13,8 +13,8 @@ This repository contains the code for an Intrusion Detection System for substati
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Halberto/goose-idsr.git
-   cd goose-idsr
+   git clone https://github.com/Halberto/goose-idrs.git
+   cd goose-idrs
    ```
 
 2. Install the required dependencies:
