@@ -8,3 +8,6 @@ xgboost
 joblib
 tqdm
 ipywidgets
+torch
+mamba-ssm
+transformers
