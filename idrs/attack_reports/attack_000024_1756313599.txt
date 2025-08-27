@@ -1,0 +1,60 @@
+
+GOOSE ATTACK DETECTION REPORT
+========================================
+Event ID: 24
+Detection Time: 2025-08-27T16:53:19.884523+00:00
+Publisher: E03A101_PROT/LLN0$GO$Control_DataSet
+Attack Type: Sequence Manipulation
+Confidence: 0.9732
+
+ATTACK DETAILS
+--------------
+Packet Timestamp: 2025-08-27 16:42:23.810151+00:00
+State Number: 47
+Sequence Number: 144
+goID: E03A101_/PROT/LLN0/DS_GENERAL_TRIP
+
+EXPLANATION (XAI)
+-----------------
+Sequence number jumped > 1 (jump magnitude: 122.0); State changed without command (stNum: 47); Low sequence consistency (0.100)
+
+KEY FEATURES AT DETECTION
+-------------------------
+sq_backwards_flag: 0
+sq_jump_gt1_flag: 1
+st_change_without_cmd_flag: 1
+time_delta_zscore: 0.2742996655715629
+sqNum_consistency: 0.1
+stNum_consistency: 0.4
+
+PACKET TIMELINE (Last 20 packets)
+----------------------------------
+Time                     | sqNum | stNum | Probability | Status
+16:52:24.944 |    14 |    48 |    0.0912 | Normal
+16:52:29.886 |   134 |    47 |    0.9685 | ATTACK
+16:52:29.910 |    15 |    48 |    0.1224 | Normal
+16:52:34.886 |   135 |    47 |    0.0005 | Normal
+16:52:39.885 |   136 |    47 |    1.0000 | ATTACK
+16:52:39.920 |    16 |    48 |    0.1224 | Normal
+16:52:44.885 |   137 |    47 |    0.9684 | ATTACK
+16:52:44.925 |    17 |    48 |    0.0606 | Normal
+16:52:49.886 |   138 |    47 |    0.9724 | ATTACK
+16:52:49.904 |    18 |    48 |    0.0606 | Normal
+16:52:54.887 |   139 |    47 |    0.9724 | ATTACK
+16:52:54.934 |    19 |    48 |    0.0606 | Normal
+16:52:59.886 |   140 |    47 |    0.9724 | ATTACK
+16:52:59.909 |    20 |    48 |    0.0606 | Normal
+16:53:04.887 |   141 |    47 |    0.0004 | Normal
+16:53:09.890 |   142 |    47 |    1.0000 | ATTACK
+16:53:09.905 |    21 |    48 |    0.0606 | Normal
+16:53:14.889 |   143 |    47 |    0.9705 | ATTACK
+16:53:14.950 |    22 |    48 |    0.0599 | Normal
+16:53:19.885 |   144 |    47 |    0.9732 | ATTACK
+
+COUNTERMEASURE STATUS
+--------------------
+Remediation Sent: Yes
+Countermeasure Time: 2025-08-27T16:53:19.891353+00:00
+
+END OF REPORT
+========================================

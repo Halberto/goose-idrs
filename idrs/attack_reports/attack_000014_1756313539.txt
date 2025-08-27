@@ -1,0 +1,60 @@
+
+GOOSE ATTACK DETECTION REPORT
+========================================
+Event ID: 14
+Detection Time: 2025-08-27T16:52:19.902543+00:00
+Publisher: E03A101_PROT/LLN0$GO$Control_DataSet
+Attack Type: Sequence Manipulation
+Confidence: 0.9672
+
+ATTACK DETAILS
+--------------
+Packet Timestamp: 2025-08-27 16:42:23.810151+00:00
+State Number: 47
+Sequence Number: 132
+goID: E03A101_/PROT/LLN0/DS_GENERAL_TRIP
+
+EXPLANATION (XAI)
+-----------------
+Sequence number jumped > 1 (jump magnitude: 120.0); State changed without command (stNum: 47); Low sequence consistency (0.200)
+
+KEY FEATURES AT DETECTION
+-------------------------
+sq_backwards_flag: 0
+sq_jump_gt1_flag: 1
+st_change_without_cmd_flag: 1
+time_delta_zscore: 0.25289459627601485
+sqNum_consistency: 0.2
+stNum_consistency: 0.4
+
+PACKET TIMELINE (Last 20 packets)
+----------------------------------
+Time                     | sqNum | stNum | Probability | Status
+16:51:39.809 |     6 |    55 |    0.9996 | ATTACK
+16:51:39.829 |     7 |    56 |    0.9994 | ATTACK
+16:51:39.847 |     8 |    57 |    0.9979 | ATTACK
+16:51:39.886 |     9 |    58 |    0.9979 | ATTACK
+16:51:39.925 |   124 |    47 |    0.0000 | Normal
+16:51:39.932 |    10 |    59 |    0.0201 | Normal
+16:51:43.646 |    29 |    48 |    0.0000 | Normal
+16:51:44.890 |   125 |    47 |    0.0000 | Normal
+16:51:47.715 |    30 |    48 |    0.0673 | Normal
+16:51:49.885 |   126 |    47 |    0.0000 | Normal
+16:51:51.792 |    31 |    48 |    0.0523 | Normal
+16:51:54.891 |   127 |    47 |    0.0000 | Normal
+16:51:55.827 |    32 |    48 |    0.2022 | Warning
+16:51:59.885 |   128 |    47 |    0.0003 | Normal
+16:52:04.885 |   129 |    47 |    0.1236 | Normal
+16:52:09.887 |   130 |    47 |    0.9997 | ATTACK
+16:52:09.909 |    11 |    48 |    0.0908 | Normal
+16:52:14.893 |   131 |    47 |    0.9667 | ATTACK
+16:52:14.918 |    12 |    48 |    0.0911 | Normal
+16:52:19.903 |   132 |    47 |    0.9672 | ATTACK
+
+COUNTERMEASURE STATUS
+--------------------
+Remediation Sent: Yes
+Countermeasure Time: 2025-08-27T16:52:19.916207+00:00
+
+END OF REPORT
+========================================
