@@ -1,4 +1,4 @@
-# Goose IDSR
+# Goose IDRS
 
 This repository contains the code for an Intrusion Detection System for substations, using data augmentation and machine learning models.
 
