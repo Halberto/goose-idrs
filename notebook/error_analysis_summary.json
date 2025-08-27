@@ -1,0 +1,19 @@
+{
+    "total_test_samples": 302238,
+    "total_errors": 114,
+    "error_rate": 0.037718619101502794,
+    "false_positives": 17,
+    "false_negatives": 97,
+    "fp_rate": 0.00674153738777323,
+    "fn_rate": 0.19372877970840824,
+    "avg_confidence_fp": 0.3436519812813949,
+    "avg_confidence_fn": 0.7369401984788753,
+    "feature_importance_ranking": {
+        "allData": 4.439314530558576e-05,
+        "sqNum": 0.028175268627147632,
+        "stNum": 0.0011320122719435206,
+        "time_delta": 0.13008010715174953,
+        "diff_stnum": 0.3513772877349028,
+        "diff_sqnum": 0.489190931068951
+    }
+}
