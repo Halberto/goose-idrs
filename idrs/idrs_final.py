@@ -12,10 +12,15 @@ import os
 import re
 import argparse
 import time
-from collections import deque, defaultdict
+import json
+import socket
+import logging
+from logging.handlers import SysLogHandler
 from datetime import datetime, timezone
-from dataclasses import dataclass, field
+from collections import deque, defaultdict
+from dataclasses import dataclass, field, asdict, is_dataclass
 from typing import Dict, List, Optional, Tuple
+import sys
 
 import numpy as np
 import joblib
@@ -500,6 +505,206 @@ class AttackEvent:
     # Fields with defaults come last
     timeline: List = field(default_factory=list)  # Recent packet history
     
+class AlarmEmitter:
+    """Emit structured alarms to json/jsonl/stdout, syslog, CEF, or OpenTelemetry-style JSON."""
+
+    def __init__(self, output_format: str = "none", output_dest: Optional[str] = None,
+                 syslog_facility: Optional[str] = None, syslog_level: Optional[str] = None):
+        self.format = (output_format or "none").lower()
+        self.dest = output_dest
+        self._logger = None
+        self._stream = None
+        self._file = None  # file handle if writing to a file
+        self._syslog_via_cef = False  # CEF over syslog (udp/tcp)
+
+        # New: defaults for syslog facility/level
+        self._facility_name = (syslog_facility or "user").lower()
+        self._syslog_level = {
+            "debug": logging.DEBUG,
+            "info": logging.INFO,
+            "warning": logging.WARNING,
+            "error": logging.ERROR,
+            "critical": logging.CRITICAL,
+        }.get((syslog_level or "info").lower(), logging.INFO)
+
+        if self.format == "none":
+            return
+
+        # Routing for destinations
+        if self.format == "syslog":
+            self._init_syslog(self.dest)
+        elif self.format in ("json", "jsonl", "otel", "cef"):
+            # CEF may optionally go via syslog when dest uses udp:// or tcp://
+            proto_host = self._parse_network_dest(self.dest) if self.dest else None
+            if self.format == "cef" and proto_host:
+                self._init_syslog(self.dest)
+                self._syslog_via_cef = True
+            else:
+                self._init_stream(self.dest)
+        else:
+            # Unknown format -> disable
+            self.format = "none"
+
+    def _looks_like_windows_path(self, dest: str) -> bool:
+        if not dest:
+            return False
+        drive, _ = os.path.splitdrive(dest)
+        return bool(drive)  # e.g., "C:" means it's a path
+
+    def _parse_network_dest(self, dest: Optional[str]):
+        if not dest:
+            return None
+        d = dest.strip()
+        if self._looks_like_windows_path(d):
+            return None
+        # udp://host:port or tcp://host:port
+        if d.lower().startswith("udp://") or d.lower().startswith("tcp://"):
+            scheme, rest = d.split("://", 1)
+            if ":" not in rest:
+                raise ValueError("Network destination must be host:port")
+            host, port = rest.rsplit(":", 1)
+            return (scheme.lower(), host, int(port))
+        # host:port (treat as UDP)
+        if ":" in d and not os.path.exists(d):
+            host, port = d.rsplit(":", 1)
+            try:
+                return ("udp", host, int(port))
+            except ValueError:
+                return None
+        return None
+
+    def _init_syslog(self, dest: Optional[str]):
+        self._logger = logging.getLogger("goose_idrs.alarm")
+        self._logger.setLevel(logging.DEBUG)  # let handler/emit decide severity
+        self._logger.propagate = False
+
+        # Resolve facility
+        try:
+            facility = SysLogHandler.facility_names.get(self._facility_name, SysLogHandler.LOG_USER)
+        except Exception:
+            facility = SysLogHandler.LOG_USER
+
+        proto_host = self._parse_network_dest(dest)
+        if proto_host:
+            scheme, host, port = proto_host
+            socktype = socket.SOCK_STREAM if scheme == "tcp" else socket.SOCK_DGRAM
+            handler = SysLogHandler(address=(host, port), socktype=socktype, facility=facility)
+        else:
+            handler = SysLogHandler(address=("127.0.0.1", 514), socktype=socket.SOCK_DGRAM, facility=facility)
+
+        handler.setFormatter(logging.Formatter("%(message)s"))
+        self._logger.addHandler(handler)
+
+    def _init_stream(self, dest: Optional[str]):
+        # "-" or None -> stdout; else open file (append, UTF-8)
+        if dest in (None, "-", ""):
+            self._stream = sys.stdout
+            return
+        # If the dest looks like network, do not treat as file here.
+        if self._parse_network_dest(dest):
+            raise ValueError(f"Network destination not supported for format '{self.format}'. Use syslog or CEF with udp:// or tcp://.")
+        # Ensure parent directory exists
+        os.makedirs(os.path.dirname(os.path.abspath(dest)) or ".", exist_ok=True)
+        self._file = open(dest, "a", encoding="utf-8", buffering=1)
+        self._stream = self._file
+
+    def close(self):
+        if self._logger:
+            for h in list(self._logger.handlers):
+                try:
+                    h.close()
+                except Exception:
+                    pass
+                self._logger.removeHandler(h)
+            self._logger = None
+        if self._file:
+            try:
+                self._file.close()
+            except Exception:
+                pass
+            self._file = None
+        self._stream = None
+
+    def _now_iso(self):
+        return datetime.now(timezone.utc).isoformat()
+
+    def _to_cef(self, event: dict) -> str:
+        # Minimal CEF mapping; escape = and | in text fields
+        def esc(s: str) -> str:
+            return str(s).replace("\\", "\\\\").replace("|", "\\|").replace("=", "\\=")
+        sev_map = {
+            "DEBUG": 1, "INFO": 3, "NOTICE": 4, "WARNING": 6,
+            "ERROR": 8, "CRITICAL": 9, "ALERT": 10, "EMERGENCY": 10, "ATTACK": 10
+        }
+        severity = sev_map.get(str(event.get("severity_text", "INFO")).upper(), 5)
+        body = event.get("body", "Attack detected")
+        # Common extensions (best-effort)
+        ext = {
+            "rt": event.get("ts") or self._now_iso(),
+            "msg": event.get("explanation") or body,
+            "cat": event.get("category") or "intrusion",
+            "cs1Label": "probability",
+            "cs1": event.get("probability"),
+            "cs2Label": "goID",
+            "cs2": event.get("goID"),
+            "cs3Label": "stNum",
+            "cs3": event.get("stNum"),
+            "cs4Label": "sqNum",
+            "cs4": event.get("sqNum"),
+            "src": event.get("src"),
+            "dst": event.get("dst"),
+            "suser": event.get("publisher"),
+            "deviceSeverity": severity,
+        }
+        ext_str = " ".join(f"{k}={esc(v)}" for k, v in ext.items() if v is not None)
+        return f"CEF:0|GooseIDS|Detector|1.0|attack|Goose Attack|{severity}|{ext_str}"
+
+    def _to_otel(self, event: dict) -> str:
+        record = {
+            "ts": event.get("ts") or self._now_iso(),
+            "severity_text": event.get("severity_text", "ATTACK"),
+            "body": event.get("body", "Attack detected"),
+            "attributes": {k: v for k, v in event.items() if k not in ("ts", "severity_text", "body")}
+        }
+        return json.dumps(record, ensure_ascii=False)
+
+    def emit(self, event):
+        if self.format == "none":
+            return
+
+        # Allow dataclass or dict
+        if is_dataclass(event):
+            event = asdict(event)
+        elif not isinstance(event, dict):
+            # Best effort: convert to string body
+            event = {"body": str(event)}
+
+        event = dict(event or {})
+        event.setdefault("ts", self._now_iso())
+        event.setdefault("severity_text", "ATTACK")
+
+        try:
+            if self.format in ("json", "jsonl"):
+                line = json.dumps(event, ensure_ascii=False)
+                self._stream.write(line + "\n")
+                self._stream.flush()
+            elif self.format == "syslog":
+                msg = event.get("body") or event.get("explanation") or "Attack detected"
+                self._logger.log(self._syslog_level, msg)
+            elif self.format == "cef":
+                line = self._to_cef(event)
+                if self._syslog_via_cef and self._logger:
+                    self._logger.log(self._syslog_level, line)
+                else:
+                    self._stream.write(line + "\n")
+                    self._stream.flush()
+            elif self.format == "otel":
+                line = self._to_otel(event)
+                self._stream.write(line + "\n")
+                self._stream.flush()
+        except Exception:
+            logging.getLogger("goose_idrs.alarm").exception("Failed to emit alarm")
+
 class RealTimeXAI:
     """Provides real-time explainability for attack predictions"""
     
@@ -566,7 +771,12 @@ class EnhancedGooseIDS:
                  early_warning_threshold: float = None, src_mac: str = "02:00:00:00:00:01",
                  focus_pub: str = None, goid_exact: str = None, goid_substr: str = None,
                  dry_run: bool = False, debug_feats: bool = False, bpf: str = None,
-                 report_dir: str = "attack_reports"):
+                 report_dir: str = "attack_reports",
+                 output_format: Optional[str] = None,
+                 output_dest: Optional[str] = None,
+                 syslog_facility: Optional[str] = None,
+                 syslog_level: Optional[str] = None,
+                 emit_warnings: bool = False):
         
         # Load model package
         if not os.path.exists(model_pkg):
@@ -594,6 +804,13 @@ class EnhancedGooseIDS:
         self.extractor = StreamingFeatureExtractor(self.q_lo_ms, self.q_hi_ms, debug_feats=debug_feats)
         self.sender = CountermeasureSender(iface=iface, src_mac=src_mac, dry_run=dry_run)
         self.xai = RealTimeXAI(self.final_feat_names)
+        self.emitter = AlarmEmitter(
+            output_format=output_format,
+            output_dest=output_dest,
+            syslog_facility=syslog_facility,
+            syslog_level=syslog_level
+        )
+        self.emit_warnings = bool(emit_warnings)
         
         # State tracking
         self.attack_events: List[AttackEvent] = []
@@ -612,6 +829,8 @@ class EnhancedGooseIDS:
         print(f"  Early warning: {self.early_threshold:.4f}")
         print(f"  Delta-t baseline (ms): [{self.q_lo_ms:.1f}, {self.q_hi_ms:.1f}]")
         print(f"  Report directory: {self.report_dir}")
+        if output_format:
+            print(f"  Alarm output: format={output_format} dest={output_dest or '-'}")
     
     def _pub_matches(self, pub: str) -> bool:
         """Check if publisher matches filters"""
@@ -845,6 +1064,28 @@ END OF REPORT
             report_path = self._generate_attack_report(event)
             print(f"Report saved: {report_path}")
             print(f"{'='*80}\n")
+
+            # Emit structured alarm (if configured)
+            try:
+                event_data = {
+                    "event_id": self.event_counter,
+                    "severity_text": "ATTACK",
+                    "body": f"ATTACK {attack_type} pub={pub} goID={goid} conf={proba:.4f}",
+                    "publisher": pub,
+                    "goID": goid,
+                    "stNum": st,
+                    "sqNum": sq,
+                    "probability": proba,
+                    "explanation": explanation,
+                    "attack_type": attack_type,
+                    "ts": current_time.isoformat(),
+                    "report_path": report_path,
+                    # category/src/dst optional; include if resolvable in your pipeline
+                    "category": "intrusion",
+                }
+                self.emitter.emit(event_data)
+            except Exception as e:
+                print(f"[WARN] Failed to emit structured alarm: {e}")
             
             # Send countermeasure
             if not self.sender.dry:
@@ -863,6 +1104,36 @@ END OF REPORT
                 if feat in fdict:
                     print(f"  {feat:28s} = {fdict[feat]}")
             print()
+        
+        # Emit WARNING as structured alarm when enabled
+        # Example context variables often present in the ATTACK block:
+        #   status, report_text, pub, goid, st, sq, proba, explanation, attack_type, current_time, report_path
+        # Emit WARNING as structured alarm when enabled
+        if 'status' in locals() and status == "WARNING" and getattr(self, "emit_warnings", False):
+            try:
+                warning_msg = (locals().get("report_text")
+                               or locals().get("warning_msg")
+                               or "Suspicious GOOSE activity")
+                event = {
+                    "severity_text": "WARNING",
+                    "body": warning_msg,
+                    "publisher": locals().get("pub"),
+                    "goID": locals().get("goid"),
+                    "stNum": locals().get("st"),
+                    "sqNum": locals().get("sq"),
+                    "probability": (locals().get("proba")
+                                    or locals().get("early_prob")
+                                    or locals().get("prob")),
+                    "explanation": locals().get("explanation"),
+                    "attack_type": locals().get("attack_type"),
+                    "ts": (locals().get("current_time").isoformat()
+                           if locals().get("current_time") else None),
+                    "report_path": locals().get("report_path"),
+                    "category": "suspicious",
+                }
+                self.emitter.emit(event)
+            except Exception:
+                logging.getLogger("goose_idrs").exception("Failed to emit structured WARNING alarm")
     
     def run(self):
         """Start the enhanced IDS"""
@@ -893,8 +1164,14 @@ END OF REPORT
                           f"(conf={event.confidence:.3f}) at {event.detection_time.strftime('%H:%M:%S')}")
             print(f"Reports saved in: {os.path.abspath(self.report_dir)}")
             print(f"{'='*80}")
+        finally:
+            try:
+                self.emitter.close()
+            except Exception:
+                pass
 
 def main():
+    import argparse
     ap = argparse.ArgumentParser(description="Enhanced GOOSE IDSR with Real-time XAI")
     ap.add_argument("--model", default=os.path.join("artifacts", "ids_lgbm_model.joblib"),
                     help="Path to joblib model package")
@@ -908,6 +1185,18 @@ def main():
                     help="Publisher filter (exact or regex r'...')")
     ap.add_argument("--goid", default=None, help="Exact goID filter")
     ap.add_argument("--goid-substr", default=None, help="goID substring filter")
+    ap.add_argument("--output-format", default=None,
+                    choices=["json", "jsonl", "syslog", "cef", "otel", "none"],
+                    help="Structured alarm output format")
+    ap.add_argument("--output-dest", default=None,
+                    help="Destination for alarms. File path or '-' for stdout. For network: udp://host:port, tcp://host:port, or host:port")
+    ap.add_argument("--syslog-facility", default=None,
+                    help="Syslog facility (e.g., user, local0..local7). Default: user")
+    ap.add_argument("--syslog-level", default=None,
+                    choices=["debug","info","warning","error","critical"],
+                    help="Default syslog severity level. Default: info")
+    ap.add_argument("--emit-warnings", action="store_true",
+                    help="Also emit structured alarms for WARNING-level events")
     ap.add_argument("--src-mac", default=os.environ.get("IDS_SRC_MAC", "02:00:00:00:00:01"),
                     help="Source MAC for countermeasures")
     ap.add_argument("--dry-run", action="store_true", 
@@ -919,7 +1208,6 @@ def main():
     ap.add_argument("--bpf", default="ether[12:2] = 0x88b8 or (ether[12:2] = 0x8100 and ether[16:2] = 0x88b8)",
                     help="Packet capture filter")
     args = ap.parse_args()
-
     try:
         ids = EnhancedGooseIDS(
             model_pkg=args.model,
@@ -933,7 +1221,12 @@ def main():
             dry_run=args.dry_run,
             debug_feats=args.debug_feats,
             bpf=args.bpf,
-            report_dir=args.report_dir
+            report_dir=args.report_dir,
+            output_format=args.output_format,
+            output_dest=args.output_dest,
+            syslog_facility=args.syslog_facility,
+            syslog_level=args.syslog_level,
+            emit_warnings=args.emit_warnings,
         )
         ids.run()
     except Exception as e:
