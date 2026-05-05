@@ -1,0 +1,45 @@
+
+GOOSE ATTACK DETECTION REPORT
+========================================
+Event ID: 2
+Detection Time: 2025-08-27T16:27:52.726836+00:00
+Publisher: REL670_0102LD0/LLN0$GO$REL670_TRIP_G
+Attack Type: Sequence Manipulation
+Confidence: 0.7597
+
+ATTACK DETAILS
+--------------
+Packet Timestamp: 2025-08-27 16:27:55.233529+00:00
+State Number: 42
+Sequence Number: 0
+goID: REL670_0102LD0/LLN0.REL670_TRIP_G
+
+EXPLANATION (XAI)
+-----------------
+Sequence number went backwards (sqNum: 0); Unusual timing pattern (delta-t z-score: 4.53)
+
+KEY FEATURES AT DETECTION
+-------------------------
+sq_backwards_flag: 1
+sq_jump_gt1_flag: 0
+st_change_without_cmd_flag: 0
+time_delta_zscore: 4.527692037908765
+sqNum_consistency: 0.6
+stNum_consistency: 0.2
+
+PACKET TIMELINE (Last 20 packets)
+----------------------------------
+Time                     | sqNum | stNum | Probability | Status
+16:27:37.137 |  2482 |    41 |    0.0000 | Normal
+16:27:42.133 |  2483 |    41 |    0.0007 | Normal
+16:27:47.130 |  2484 |    41 |    0.0013 | Normal
+16:27:52.125 |  2485 |    41 |    0.0013 | Normal
+16:27:52.727 |     0 |    42 |    0.7597 | ATTACK
+
+COUNTERMEASURE STATUS
+--------------------
+Remediation Sent: Yes
+Countermeasure Time: 2025-08-27T16:27:52.733668+00:00
+
+END OF REPORT
+========================================

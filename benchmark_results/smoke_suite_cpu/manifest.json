@@ -1,0 +1,53 @@
+{
+  "environment": {
+    "cwd": "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs",
+    "gpu": {
+      "cuda_available": false,
+      "device": null,
+      "torch_cuda": null
+    },
+    "packages": {
+      "cuml": null,
+      "cupy-cuda12x": null,
+      "joblib": "1.5.3",
+      "lightgbm": "4.6.0",
+      "mamba-ssm": null,
+      "numpy": "2.4.4",
+      "psutil": "7.2.2",
+      "scikit-learn": "1.8.0",
+      "torch": "2.11.0",
+      "xgboost": "3.2.0"
+    },
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 191 Stepping 2, GenuineIntel",
+    "python": "3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 64 bit (AMD64)]",
+    "timestamp_utc": "2026-05-04T16:45:22.077497+00:00"
+  },
+  "mode": "cpu",
+  "models": [
+    "lgbm_idrs"
+  ],
+  "reps": 20,
+  "runs": [
+    {
+      "command": [
+        "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\notebook\\benchmark_cpu_models.py",
+        "lgbm_idrs",
+        "--warmup",
+        "5",
+        "--reps",
+        "20",
+        "--output-dir",
+        "benchmark_results\\smoke_suite_cpu\\json"
+      ],
+      "duration_s": 1.9056014999805484,
+      "model": "lgbm_idrs",
+      "returncode": 0,
+      "stderr": "benchmark_results\\smoke_suite_cpu\\lgbm_idrs.stderr.txt",
+      "stdout": "benchmark_results\\smoke_suite_cpu\\lgbm_idrs.stdout.txt"
+    }
+  ],
+  "script": "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\notebook\\benchmark_cpu_models.py",
+  "warmup": 5
+}

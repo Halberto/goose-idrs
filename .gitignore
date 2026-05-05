@@ -1,2 +1,7 @@
 # OpenMemory - IDE/Assistant specific rules
 .cursor\rules\openmemory.mdc
+
+
+# Python bytecode
+__pycache__/
+*.pyc

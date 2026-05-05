@@ -1,0 +1,60 @@
+
+GOOSE ATTACK DETECTION REPORT
+========================================
+Event ID: 4
+Detection Time: 2025-08-27T16:30:21.504369+00:00
+Publisher: E03A101_PROT/LLN0$GO$Control_DataSet
+Attack Type: Sequence Manipulation
+Confidence: 1.0000
+
+ATTACK DETAILS
+--------------
+Packet Timestamp: 2025-08-27 16:30:21.525176+00:00
+State Number: 44
+Sequence Number: 12
+goID: E03A101_/PROT/LLN0/DS_GENERAL_TRIP
+
+EXPLANATION (XAI)
+-----------------
+Low sequence consistency (0.200)
+
+KEY FEATURES AT DETECTION
+-------------------------
+sq_backwards_flag: 0
+sq_jump_gt1_flag: 0
+st_change_without_cmd_flag: 0
+time_delta_zscore: 0.15134885090707995
+sqNum_consistency: 0.2
+stNum_consistency: 0.4
+
+PACKET TIMELINE (Last 20 packets)
+----------------------------------
+Time                     | sqNum | stNum | Probability | Status
+16:29:36.885 |     1 |    44 |    0.0391 | Normal
+16:29:40.954 |     2 |    44 |    0.0001 | Normal
+16:29:41.662 |    29 |    43 |    0.0009 | Normal
+16:29:44.993 |     3 |    44 |    0.0448 | Normal
+16:29:46.662 |    30 |    43 |    0.0026 | Normal
+16:29:49.041 |     4 |    44 |    0.0585 | Normal
+16:29:51.663 |    31 |    43 |    0.0000 | Normal
+16:29:53.081 |     5 |    44 |    0.1901 | Normal
+16:29:56.662 |    32 |    43 |    0.0000 | Normal
+16:29:57.181 |     6 |    44 |    0.1891 | Normal
+16:30:01.231 |     7 |    44 |    0.0459 | Normal
+16:30:01.662 |    33 |    43 |    0.0000 | Normal
+16:30:05.257 |     8 |    44 |    0.1891 | Normal
+16:30:06.662 |    34 |    43 |    0.0000 | Normal
+16:30:09.300 |     9 |    44 |    0.1891 | Normal
+16:30:11.667 |    35 |    43 |    0.0000 | Normal
+16:30:13.409 |    10 |    44 |    0.1891 | Normal
+16:30:16.662 |    36 |    43 |    0.0000 | Normal
+16:30:17.463 |    11 |    44 |    0.1891 | Normal
+16:30:21.505 |    12 |    44 |    1.0000 | ATTACK
+
+COUNTERMEASURE STATUS
+--------------------
+Remediation Sent: Yes
+Countermeasure Time: 2025-08-27T16:30:21.511201+00:00
+
+END OF REPORT
+========================================

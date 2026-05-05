@@ -1,0 +1,13 @@
+wall_mean_ms=0.053200
+wall_std_ms=0.011100
+wall_p50_ms=0.053200
+wall_p95_ms=0.042100
+wall_max_ms=0.064300
+model=lgbm_idrs
+backend=cpu
+n_features=50
+serialized_mb=1.7478227615356445
+rss_after_model_load_mb=148.68359375
+rss_after_warmup_mb=148.68359375
+rss_final_mb=148.81640625
+json_output=benchmark_results\smoke_suite_cpu_all\json\lgbm_idrs_cpu_benchmark.json

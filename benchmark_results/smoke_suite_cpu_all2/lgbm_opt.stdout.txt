@@ -1,0 +1,13 @@
+wall_mean_ms=0.138350
+wall_std_ms=0.028850
+wall_p50_ms=0.138350
+wall_p95_ms=0.167200
+wall_max_ms=0.167200
+model=lgbm_opt
+backend=cpu
+n_features=23
+serialized_mb=8.431215286254883
+rss_after_model_load_mb=154.59765625
+rss_after_warmup_mb=154.59765625
+rss_final_mb=154.7265625
+json_output=benchmark_results\smoke_suite_cpu_all2\json\lgbm_opt_cpu_benchmark.json

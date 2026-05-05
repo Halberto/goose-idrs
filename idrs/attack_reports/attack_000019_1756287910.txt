@@ -1,0 +1,60 @@
+
+GOOSE ATTACK DETECTION REPORT
+========================================
+Event ID: 19
+Detection Time: 2025-08-27T09:45:10.518657+00:00
+Publisher: E03A101_PROT/LLN0$GO$Control_DataSet
+Attack Type: Sequence Manipulation
+Confidence: 0.9951
+
+ATTACK DETAILS
+--------------
+Packet Timestamp: 2025-08-27 09:22:57.997675+00:00
+State Number: 29
+Sequence Number: 279
+goID: E03A101_/PROT/LLN0/DS_GENERAL_TRIP
+
+EXPLANATION (XAI)
+-----------------
+Subtle pattern anomaly detected by ML model
+
+KEY FEATURES AT DETECTION
+-------------------------
+sq_backwards_flag: 0
+sq_jump_gt1_flag: 0
+st_change_without_cmd_flag: 0
+time_delta_zscore: 0.10050378152592121
+sqNum_consistency: 0.9
+stNum_consistency: 0.0
+
+PACKET TIMELINE (Last 20 packets)
+----------------------------------
+Time                     | sqNum | stNum | Probability | Status
+09:44:05.515 |   266 |    29 |    0.0000 | Normal
+09:44:06.900 |    21 |    30 |    0.4225 | Warning
+09:44:10.515 |   267 |    29 |    0.0000 | Normal
+09:44:10.964 |    22 |    30 |    0.4225 | Warning
+09:44:15.036 |    23 |    30 |    0.0590 | Normal
+09:44:15.516 |   268 |    29 |    0.0000 | Normal
+09:44:19.103 |    24 |    30 |    0.4225 | Warning
+09:44:20.533 |   269 |    29 |    0.0000 | Normal
+09:44:23.186 |    25 |    30 |    0.4225 | Warning
+09:44:23.623 |    26 |    30 |    0.9999 | ATTACK
+09:44:25.516 |   270 |    29 |    0.0000 | Normal
+09:44:30.516 |   271 |    29 |    0.4226 | Warning
+09:44:35.516 |   272 |    29 |    0.3498 | Warning
+09:44:40.528 |   273 |    29 |    0.9994 | ATTACK
+09:44:45.516 |   274 |    29 |    0.9998 | ATTACK
+09:44:50.523 |   275 |    29 |    0.9996 | ATTACK
+09:44:55.516 |   276 |    29 |    0.9993 | ATTACK
+09:45:00.517 |   277 |    29 |    0.9988 | ATTACK
+09:45:05.518 |   278 |    29 |    0.9989 | ATTACK
+09:45:10.529 |   279 |    29 |    0.9951 | ATTACK
+
+COUNTERMEASURE STATUS
+--------------------
+Remediation Sent: Yes
+Countermeasure Time: 2025-08-27T09:45:10.532319+00:00
+
+END OF REPORT
+========================================

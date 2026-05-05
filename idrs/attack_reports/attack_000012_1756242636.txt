@@ -1,0 +1,64 @@
+
+GOOSE ATTACK DETECTION REPORT
+========================================
+Event ID: 12
+Detection Time: 2025-08-26T21:10:35.991488+00:00
+Publisher: E03A101_PROT/LLN0$GO$Control_DataSet
+Attack Type: Sequence Manipulation
+Confidence: 0.6900
+
+ATTACK DETAILS
+--------------
+Packet Timestamp: 2025-08-26 21:08:19.728547+00:00
+First Suspicious Seen (warning): N/A
+First Suspicious Packet Time: N/A
+Delay warning->attack (s): 0.0
+Delay first-malic-publish->detect (s): 136.262941
+State Number: 11
+Sequence Number: 40
+goID: E03A101_/PROT/LLN0/DS_GENERAL_TRIP
+
+EXPLANATION (XAI)
+-----------------
+Sequence number jumped > 1 (jump magnitude: 29.0); State changed without command (stNum: 11); Low sequence consistency (0.200)
+
+KEY FEATURES AT DETECTION
+-------------------------
+sq_backwards_flag: 0
+sq_jump_gt1_flag: 1
+st_change_without_cmd_flag: 1
+time_delta_zscore: 0.2962710069506577
+sqNum_consistency: 0.2
+stNum_consistency: 0.4
+
+PACKET TIMELINE (Last 20 packets)
+----------------------------------
+Time                     | sqNum | stNum | Probability | Status
+21:09:55.992 |    32 |    11 |    0.6900 | ATTACK
+21:09:56.764 |     1 |    12 |    0.0027 | Normal
+21:10:00.841 |     2 |    12 |    0.0001 | Normal
+21:10:00.992 |    33 |    11 |    0.6900 | ATTACK
+21:10:04.905 |     3 |    12 |    0.0351 | Normal
+21:10:05.992 |    34 |    11 |    0.6900 | ATTACK
+21:10:08.996 |     4 |    12 |    0.0852 | Normal
+21:10:10.992 |    35 |    11 |    0.6900 | ATTACK
+21:10:13.128 |     5 |    12 |    0.1343 | Normal
+21:10:15.992 |    36 |    11 |    0.6900 | ATTACK
+21:10:17.200 |     6 |    12 |    0.1387 | Normal
+21:10:20.999 |    37 |    11 |    0.6900 | ATTACK
+21:10:21.300 |     7 |    12 |    0.0926 | Normal
+21:10:25.376 |     8 |    12 |    0.0903 | Normal
+21:10:25.992 |    38 |    11 |    0.6900 | ATTACK
+21:10:29.451 |     9 |    12 |    0.2366 | Warning
+21:10:30.992 |    39 |    11 |    0.6900 | ATTACK
+21:10:32.672 |    10 |    12 |    0.2366 | Warning
+21:10:33.156 |    11 |    12 |    0.9999 | ATTACK
+21:10:35.992 |    40 |    11 |    0.6900 | ATTACK
+
+COUNTERMEASURE STATUS
+--------------------
+Remediation Sent: Yes
+Countermeasure Time: 2025-08-26T21:10:36.000269+00:00
+
+END OF REPORT
+========================================

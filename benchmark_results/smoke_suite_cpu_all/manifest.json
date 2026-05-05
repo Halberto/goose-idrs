@@ -1,0 +1,148 @@
+{
+  "environment": {
+    "cwd": "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs",
+    "gpu": {
+      "cuda_available": false,
+      "device": null,
+      "torch_cuda": null
+    },
+    "packages": {
+      "cuml": null,
+      "cupy-cuda12x": null,
+      "joblib": "1.5.3",
+      "lightgbm": "4.6.0",
+      "mamba-ssm": null,
+      "numpy": "2.4.4",
+      "psutil": "7.2.2",
+      "scikit-learn": "1.8.0",
+      "torch": "2.11.0",
+      "xgboost": "3.2.0"
+    },
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 191 Stepping 2, GenuineIntel",
+    "python": "3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 64 bit (AMD64)]",
+    "timestamp_utc": "2026-05-04T16:46:09.173193+00:00"
+  },
+  "mode": "cpu",
+  "models": [
+    "rf",
+    "xgb",
+    "lgbm_idrs",
+    "lgbm_opt",
+    "gru",
+    "transformer"
+  ],
+  "reps": 2,
+  "runs": [
+    {
+      "command": [
+        "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\notebook\\benchmark_cpu_models.py",
+        "rf",
+        "--warmup",
+        "1",
+        "--reps",
+        "2",
+        "--output-dir",
+        "benchmark_results\\smoke_suite_cpu_all\\json"
+      ],
+      "duration_s": 1.9425994000048377,
+      "model": "rf",
+      "returncode": 0,
+      "stderr": "benchmark_results\\smoke_suite_cpu_all\\rf.stderr.txt",
+      "stdout": "benchmark_results\\smoke_suite_cpu_all\\rf.stdout.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\notebook\\benchmark_cpu_models.py",
+        "xgb",
+        "--warmup",
+        "1",
+        "--reps",
+        "2",
+        "--output-dir",
+        "benchmark_results\\smoke_suite_cpu_all\\json"
+      ],
+      "duration_s": 2.1018919000052847,
+      "model": "xgb",
+      "returncode": 1,
+      "stderr": "benchmark_results\\smoke_suite_cpu_all\\xgb.stderr.txt",
+      "stdout": "benchmark_results\\smoke_suite_cpu_all\\xgb.stdout.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\notebook\\benchmark_cpu_models.py",
+        "lgbm_idrs",
+        "--warmup",
+        "1",
+        "--reps",
+        "2",
+        "--output-dir",
+        "benchmark_results\\smoke_suite_cpu_all\\json"
+      ],
+      "duration_s": 1.901901600009296,
+      "model": "lgbm_idrs",
+      "returncode": 0,
+      "stderr": "benchmark_results\\smoke_suite_cpu_all\\lgbm_idrs.stderr.txt",
+      "stdout": "benchmark_results\\smoke_suite_cpu_all\\lgbm_idrs.stdout.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\notebook\\benchmark_cpu_models.py",
+        "lgbm_opt",
+        "--warmup",
+        "1",
+        "--reps",
+        "2",
+        "--output-dir",
+        "benchmark_results\\smoke_suite_cpu_all\\json"
+      ],
+      "duration_s": 1.966107899992494,
+      "model": "lgbm_opt",
+      "returncode": 0,
+      "stderr": "benchmark_results\\smoke_suite_cpu_all\\lgbm_opt.stderr.txt",
+      "stdout": "benchmark_results\\smoke_suite_cpu_all\\lgbm_opt.stdout.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\notebook\\benchmark_cpu_models.py",
+        "gru",
+        "--warmup",
+        "1",
+        "--reps",
+        "2",
+        "--output-dir",
+        "benchmark_results\\smoke_suite_cpu_all\\json"
+      ],
+      "duration_s": 2.0480818999931216,
+      "model": "gru",
+      "returncode": 0,
+      "stderr": "benchmark_results\\smoke_suite_cpu_all\\gru.stderr.txt",
+      "stdout": "benchmark_results\\smoke_suite_cpu_all\\gru.stdout.txt"
+    },
+    {
+      "command": [
+        "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\notebook\\benchmark_cpu_models.py",
+        "transformer",
+        "--warmup",
+        "1",
+        "--reps",
+        "2",
+        "--output-dir",
+        "benchmark_results\\smoke_suite_cpu_all\\json"
+      ],
+      "duration_s": 2.0044853999861516,
+      "model": "transformer",
+      "returncode": 0,
+      "stderr": "benchmark_results\\smoke_suite_cpu_all\\transformer.stderr.txt",
+      "stdout": "benchmark_results\\smoke_suite_cpu_all\\transformer.stdout.txt"
+    }
+  ],
+  "script": "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\notebook\\benchmark_cpu_models.py",
+  "warmup": 1
+}

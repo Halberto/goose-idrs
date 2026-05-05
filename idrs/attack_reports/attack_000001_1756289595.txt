@@ -1,0 +1,60 @@
+
+GOOSE ATTACK DETECTION REPORT
+========================================
+Event ID: 1
+Detection Time: 2025-08-27T10:13:15.103926+00:00
+Publisher: E03A101_PROT/LLN0$GO$Control_DataSet
+Attack Type: Sequence Manipulation
+Confidence: 1.0000
+
+ATTACK DETAILS
+--------------
+Packet Timestamp: 2025-08-27 10:13:15.093622+00:00
+State Number: 36
+Sequence Number: 10
+goID: E03A101_/PROT/LLN0/DS_GENERAL_TRIP
+
+EXPLANATION (XAI)
+-----------------
+Low sequence consistency (0.100)
+
+KEY FEATURES AT DETECTION
+-------------------------
+sq_backwards_flag: 0
+sq_jump_gt1_flag: 0
+st_change_without_cmd_flag: 0
+time_delta_zscore: 0.17973302199363608
+sqNum_consistency: 0.1
+stNum_consistency: 0.5
+
+PACKET TIMELINE (Last 20 packets)
+----------------------------------
+Time                     | sqNum | stNum | Probability | Status
+10:12:30.759 |    29 |    35 |    0.0024 | Normal
+10:12:34.401 |     0 |    36 |    0.0000 | Normal
+10:12:35.766 |    30 |    35 |    0.0648 | Normal
+10:12:38.508 |     1 |    36 |    0.0573 | Normal
+10:12:40.770 |    31 |    35 |    0.0166 | Normal
+10:12:42.584 |     2 |    36 |    0.0653 | Normal
+10:12:45.774 |    32 |    35 |    0.0076 | Normal
+10:12:46.630 |     3 |    36 |    0.0713 | Normal
+10:12:50.704 |     4 |    36 |    0.0147 | Normal
+10:12:50.760 |    33 |    35 |    0.0000 | Normal
+10:12:54.804 |     5 |    36 |    0.2366 | Warning
+10:12:55.758 |    34 |    35 |    0.0000 | Normal
+10:12:58.892 |     6 |    36 |    0.2366 | Warning
+10:13:00.759 |    35 |    35 |    0.0000 | Normal
+10:13:02.970 |     7 |    36 |    0.2366 | Warning
+10:13:05.759 |    36 |    35 |    0.0000 | Normal
+10:13:07.014 |     8 |    36 |    0.2366 | Warning
+10:13:10.759 |    37 |    35 |    0.0000 | Normal
+10:13:11.047 |     9 |    36 |    0.0798 | Normal
+10:13:15.104 |    10 |    36 |    1.0000 | ATTACK
+
+COUNTERMEASURE STATUS
+--------------------
+Remediation Sent: Yes
+Countermeasure Time: 2025-08-27T10:13:15.111735+00:00
+
+END OF REPORT
+========================================

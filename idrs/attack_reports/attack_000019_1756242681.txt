@@ -1,0 +1,64 @@
+
+GOOSE ATTACK DETECTION REPORT
+========================================
+Event ID: 19
+Detection Time: 2025-08-26T21:11:20.991556+00:00
+Publisher: E03A101_PROT/LLN0$GO$Control_DataSet
+Attack Type: Sequence Manipulation
+Confidence: 0.7390
+
+ATTACK DETAILS
+--------------
+Packet Timestamp: 2025-08-26 21:08:19.728547+00:00
+First Suspicious Seen (warning): N/A
+First Suspicious Packet Time: N/A
+Delay warning->attack (s): 0.0
+Delay first-malic-publish->detect (s): 181.263009
+State Number: 11
+Sequence Number: 49
+goID: E03A101_/PROT/LLN0/DS_GENERAL_TRIP
+
+EXPLANATION (XAI)
+-----------------
+Subtle pattern anomaly detected by ML model
+
+KEY FEATURES AT DETECTION
+-------------------------
+sq_backwards_flag: 0
+sq_jump_gt1_flag: 0
+st_change_without_cmd_flag: 0
+time_delta_zscore: 0.0
+sqNum_consistency: 0.9
+stNum_consistency: 0.0
+
+PACKET TIMELINE (Last 20 packets)
+----------------------------------
+Time                     | sqNum | stNum | Probability | Status
+21:10:15.992 |    36 |    11 |    0.6900 | ATTACK
+21:10:17.200 |     6 |    12 |    0.1387 | Normal
+21:10:20.999 |    37 |    11 |    0.6900 | ATTACK
+21:10:21.300 |     7 |    12 |    0.0926 | Normal
+21:10:25.376 |     8 |    12 |    0.0903 | Normal
+21:10:25.992 |    38 |    11 |    0.6900 | ATTACK
+21:10:29.451 |     9 |    12 |    0.2366 | Warning
+21:10:30.992 |    39 |    11 |    0.6900 | ATTACK
+21:10:32.672 |    10 |    12 |    0.2366 | Warning
+21:10:33.156 |    11 |    12 |    0.9999 | ATTACK
+21:10:35.992 |    40 |    11 |    0.6900 | ATTACK
+21:10:40.992 |    41 |    11 |    0.0535 | Normal
+21:10:45.997 |    42 |    11 |    0.0084 | Normal
+21:10:50.992 |    43 |    11 |    0.8474 | ATTACK
+21:10:55.991 |    44 |    11 |    0.9164 | ATTACK
+21:11:00.991 |    45 |    11 |    0.8703 | ATTACK
+21:11:05.991 |    46 |    11 |    0.7835 | ATTACK
+21:11:10.991 |    47 |    11 |    0.7747 | ATTACK
+21:11:15.992 |    48 |    11 |    0.7873 | ATTACK
+21:11:20.992 |    49 |    11 |    0.7390 | ATTACK
+
+COUNTERMEASURE STATUS
+--------------------
+Remediation Sent: Yes
+Countermeasure Time: 2025-08-26T21:11:21.036451+00:00
+
+END OF REPORT
+========================================

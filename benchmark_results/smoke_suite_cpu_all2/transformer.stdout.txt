@@ -1,0 +1,12 @@
+wall_mean_ms=0.450150
+wall_std_ms=0.026150
+wall_p50_ms=0.450150
+wall_p95_ms=0.476300
+wall_max_ms=0.476300
+model=transformer
+backend=cpu
+params=293570
+rss_after_model_load_mb=201.12890625
+rss_after_warmup_mb=203.2578125
+rss_final_mb=203.26171875
+json_output=benchmark_results\smoke_suite_cpu_all2\json\transformer_cpu_benchmark.json

@@ -1,0 +1,45 @@
+
+GOOSE ATTACK DETECTION REPORT
+========================================
+Event ID: 3
+Detection Time: 2025-08-27T16:27:52.783442+00:00
+Publisher: F60_0202Master/LLN0$GO$F60_TRIP_G
+Attack Type: Sequence Manipulation
+Confidence: 0.7597
+
+ATTACK DETAILS
+--------------
+Packet Timestamp: 2025-08-27 16:30:36.195625+00:00
+State Number: 42
+Sequence Number: 0
+goID: TxGOOSE1
+
+EXPLANATION (XAI)
+-----------------
+Sequence number went backwards (sqNum: 0); Unusual timing pattern (delta-t z-score: 3.96)
+
+KEY FEATURES AT DETECTION
+-------------------------
+sq_backwards_flag: 1
+sq_jump_gt1_flag: 0
+st_change_without_cmd_flag: 0
+time_delta_zscore: 3.9582478466372586
+sqNum_consistency: 0.6
+stNum_consistency: 0.2
+
+PACKET TIMELINE (Last 20 packets)
+----------------------------------
+Time                     | sqNum | stNum | Probability | Status
+16:27:35.428 |  2475 |    41 |    0.0000 | Normal
+16:27:40.431 |  2476 |    41 |    0.0007 | Normal
+16:27:45.433 |  2477 |    41 |    0.0013 | Normal
+16:27:50.436 |  2478 |    41 |    0.0013 | Normal
+16:27:52.783 |     0 |    42 |    0.7597 | ATTACK
+
+COUNTERMEASURE STATUS
+--------------------
+Remediation Sent: Yes
+Countermeasure Time: 2025-08-27T16:27:52.790275+00:00
+
+END OF REPORT
+========================================

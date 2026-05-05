@@ -1,0 +1,13 @@
+wall_mean_ms=0.445000
+wall_std_ms=0.029200
+wall_p50_ms=0.445000
+wall_p95_ms=0.474200
+wall_max_ms=0.474200
+model=xgb
+backend=cpu
+n_features=26
+serialized_mb=0.8596439361572266
+rss_after_model_load_mb=248.69140625
+rss_after_warmup_mb=248.69140625
+rss_final_mb=248.90625
+json_output=benchmark_results\smoke_suite_cpu_all2\json\xgb_cpu_benchmark.json

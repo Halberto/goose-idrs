@@ -39,6 +39,13 @@ To run these notebooks, start Jupyter Notebook or JupyterLab from the root direc
 
 The required Python libraries are listed in the `requirements.txt` file.
 
+## Runtime Benchmarks
+
+Reproducible CPU and GPU latency/memory benchmark scripts are documented in
+`notebook/BENCHMARK_REPRODUCIBILITY.md`. The benchmark suite runs one model per
+process and records latency, process RSS memory, package versions, and hardware
+metadata for the saved model artifacts.
+
 ## Structured Alarm Outputs
 
 The enhanced IDS (`idrs/idrs_final.py`) can emit alarms in multiple formats via `--output-format`:

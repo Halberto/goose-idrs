@@ -497,6 +497,7 @@ class AttackEvent:
     publisher_id: str
     detection_time: datetime
     packet_time: datetime
+    detection_latency_ms: float
     confidence: float
     attack_type: str
     explanation: str
@@ -914,6 +915,7 @@ Confidence: {event.confidence:.4f}
 ATTACK DETAILS
 --------------
 Packet Timestamp: {event.packet_time}
+Processing Latency (ms): {event.detection_latency_ms:.3f}
 State Number: {event.packet_details.get('stNum', 'N/A')}
 Sequence Number: {event.packet_details.get('sqNum', 'N/A')}
 goID: {event.packet_details.get('goID', 'N/A')}
@@ -967,7 +969,10 @@ END OF REPORT
     
     def handle_packet(self, pkt):
         """Enhanced packet handler with multi-stage detection"""
-        current_time = datetime.now(timezone.utc)
+        wall_now = time.time()
+        current_time = datetime.fromtimestamp(wall_now, timezone.utc)
+        recv_ts = float(getattr(pkt, "time", wall_now))
+        detection_latency_ms = max(0.0, (wall_now - recv_ts) * 1000.0)
         
         # Parse packet
         info = parse_goose_packet(pkt)
@@ -1019,7 +1024,8 @@ END OF REPORT
               f"goID={goid[:20]}{'...' if len(goid) > 20 else ''} | "
               f"st={st:3d} | sq={sq:5d} | "
               f"prob={proba:.4f} | "
-              f"pkt_time={packet_time.strftime('%H:%M:%S.%f')[:-3]}")
+              f"pkt_time={packet_time.strftime('%H:%M:%S.%f')[:-3]} | "
+              f"lat_ms={detection_latency_ms:.3f}")
         
         # Attack detection and response
         if pred == 1:
@@ -1037,6 +1043,7 @@ END OF REPORT
                 publisher_id=pub,
                 detection_time=current_time,
                 packet_time=packet_time,
+                detection_latency_ms=detection_latency_ms,
                 confidence=proba,
                 attack_type=attack_type,
                 explanation=explanation,
@@ -1059,6 +1066,7 @@ END OF REPORT
             print(f"Explanation: {explanation}")
             print(f"Packet Details: stNum={st}, sqNum={sq}")
             print(f"Packet Time: {packet_time.isoformat()}")
+            print(f"Processing Latency (ms): {detection_latency_ms:.3f}")
             
             # Generate detailed report
             report_path = self._generate_attack_report(event)
@@ -1076,6 +1084,7 @@ END OF REPORT
                     "stNum": st,
                     "sqNum": sq,
                     "probability": proba,
+                    "latency_ms": detection_latency_ms,
                     "explanation": explanation,
                     "attack_type": attack_type,
                     "ts": current_time.isoformat(),

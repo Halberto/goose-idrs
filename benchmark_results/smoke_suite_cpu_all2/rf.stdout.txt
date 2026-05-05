@@ -1,0 +1,13 @@
+wall_mean_ms=3.306650
+wall_std_ms=0.032150
+wall_p50_ms=3.306650
+wall_p95_ms=3.338800
+wall_max_ms=3.338800
+model=rf
+backend=cpu
+n_features=6
+serialized_mb=1.3565149307250977
+rss_after_model_load_mb=146.5859375
+rss_after_warmup_mb=146.5859375
+rss_final_mb=146.62109375
+json_output=benchmark_results\smoke_suite_cpu_all2\json\rf_cpu_benchmark.json

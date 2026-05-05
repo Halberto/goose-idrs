@@ -1,0 +1,49 @@
+{
+  "artifact": "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs\\notebook\\models\\goose_detectors\\xgb_optimized_model.joblib",
+  "backend": "cpu",
+  "cwd": "C:\\Users\\herme\\OneDrive\\Documents\\goose-idrs\\goose-idrs",
+  "environment": {
+    "cpu_logical": 24,
+    "cpu_physical": 16,
+    "packages": {
+      "joblib": "1.5.3",
+      "lightgbm": "4.6.0",
+      "mamba-ssm": null,
+      "numpy": "2.4.4",
+      "psutil": "7.2.2",
+      "scikit-learn": "1.8.0",
+      "torch": "2.11.0",
+      "xgboost": "3.2.0"
+    },
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 191 Stepping 2, GenuineIntel",
+    "python": "3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 64 bit (AMD64)]",
+    "ram_total_mb": 32461.4921875,
+    "thread_env": {
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "memory_scope": "process_rss_mb",
+  "metric_scope": "single_frame_predict_only_after_warmup",
+  "model": "xgb",
+  "n_features": 26,
+  "pid": 77816,
+  "repetitions": 2,
+  "rss_after_imports_mb": 47.03125,
+  "rss_after_model_load_mb": 248.69140625,
+  "rss_after_warmup_mb": 248.69140625,
+  "rss_final_mb": 248.90625,
+  "serialized_mb": 0.8596439361572266,
+  "timing": {
+    "max_ms": 0.4742,
+    "mean_ms": 0.445,
+    "p50_ms": 0.445,
+    "p95_ms": 0.4742,
+    "repetitions": 2,
+    "std_ms": 0.029200000000000004
+  },
+  "warmup": 1
+}

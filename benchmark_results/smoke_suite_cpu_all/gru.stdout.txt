@@ -1,0 +1,12 @@
+wall_mean_ms=1.012850
+wall_std_ms=0.022550
+wall_p50_ms=1.012850
+wall_p95_ms=0.990300
+wall_max_ms=1.035400
+model=gru
+backend=cpu
+params=126531
+rss_after_model_load_mb=199.4921875
+rss_after_warmup_mb=201.27734375
+rss_final_mb=201.28125
+json_output=benchmark_results\smoke_suite_cpu_all\json\gru_cpu_benchmark.json
