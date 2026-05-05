@@ -5,3 +5,9 @@
 # Python bytecode
 __pycache__/
 *.pyc
+
+# Large model and data artifacts
+notebook/*.pkl
+notebook/*.joblib
+notebook/models/
+notebook/goose_scaler.joblib
