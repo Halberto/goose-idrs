@@ -1,0 +1,597 @@
+{
+  "corpus_rows": 1005534,
+  "n_features": 53,
+  "feature_list": [
+    "time_delta",
+    "time_delta_zscore",
+    "sqNum",
+    "stNum",
+    "sqNum_diff",
+    "stNum_diff",
+    "sqNum_diff_abs",
+    "stNum_diff_abs",
+    "sq_backwards_flag",
+    "sq_jump_gt1_flag",
+    "sq_jump_gt1_abs_flag",
+    "sq_backwards_mag",
+    "sq_jump_mag",
+    "st_change_flag",
+    "st_change_with_cmd_flag",
+    "st_change_without_cmd_flag",
+    "sqNum_rolling_mean",
+    "sqNum_rolling_std",
+    "sqNum_rolling_median",
+    "sqNum_deviation",
+    "stNum_rolling_mean",
+    "stNum_rolling_std",
+    "stNum_rolling_median",
+    "stNum_deviation",
+    "sq_frac_pos1",
+    "sq_frac_gt1",
+    "sq_frac_backwards",
+    "st_change_rate",
+    "sqNum_consistency",
+    "stNum_consistency",
+    "unique_seq_patterns",
+    "unique_state_patterns",
+    "sq_circ_diff",
+    "sq_wrap_flag",
+    "sq_incons_flag",
+    "sq_incons_count_w100",
+    "sq_backwards_count_w100",
+    "sq_jump_abs_count_w100",
+    "sq_frac_pos1_w100",
+    "sq_residual_abs_sum_w100",
+    "sq_circ_diff_std_w100",
+    "st_injected_count_w100",
+    "st_change_count_w100",
+    "st_change_rate_w100",
+    "ctx_lower_stnum_next3",
+    "ctx_st_back_count_w20",
+    "ctx_st_threads_w20",
+    "dt_in_baseline_flag",
+    "dt_below_baseline",
+    "dt_above_baseline",
+    "dt_in_pub_baseline_flag",
+    "dt_above_pub_baseline",
+    "dt_below_pub_baseline"
+  ],
+  "attack_rows": 165660,
+  "legit_rows": 839874,
+  "exact": {
+    "n_groups": 0,
+    "rows_in_groups": 0,
+    "attack_rows": 0,
+    "attack_pct": 0.0,
+    "legit_rows": 0,
+    "legit_pct": 0.0,
+    "lower_bound": 0,
+    "lower_bound_pct": 0.0
+  },
+  "tolerance": {
+    "n_groups": 0,
+    "rows_in_groups": 0,
+    "attack_rows": 0,
+    "attack_pct": 0.0,
+    "legit_rows": 0,
+    "legit_pct": 0.0,
+    "lower_bound": 0,
+    "lower_bound_pct": 0.0,
+    "significant_figures": 6
+  },
+  "close_but_not_identical_drivers": {},
+  "residual_errors": [
+    {
+      "csv_row": 441206,
+      "kind": "FP",
+      "score": 0.9864,
+      "stNum": 1199,
+      "sqNum": 17,
+      "exact_group_size": 1,
+      "exact_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "exact_collision": false,
+      "tol_group_size": 1,
+      "tol_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "tol_collision": false,
+      "nearest_opposite": {
+        "csv_row": 441212,
+        "std_distance": 0.4058759109677835,
+        "n_features_differ": 13,
+        "top_diffs": [
+          {
+            "feature": "sqNum_consistency",
+            "err_val": 0.6,
+            "nbr_val": 0.5,
+            "delta": -0.09999999999999998
+          },
+          {
+            "feature": "sq_frac_pos1",
+            "err_val": 0.6,
+            "nbr_val": 0.5,
+            "delta": -0.09999999999999998
+          },
+          {
+            "feature": "time_delta_zscore",
+            "err_val": 0.6888434460700861,
+            "nbr_val": 0.7570282209646884,
+            "delta": 0.06818477489460228
+          },
+          {
+            "feature": "sq_incons_count_w100",
+            "err_val": 26.0,
+            "nbr_val": 29.0,
+            "delta": 3.0
+          }
+        ]
+      }
+    },
+    {
+      "csv_row": 550,
+      "kind": "FP",
+      "score": 0.9466,
+      "stNum": 25,
+      "sqNum": 8,
+      "exact_group_size": 1,
+      "exact_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "exact_collision": false,
+      "tol_group_size": 1,
+      "tol_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "tol_collision": false,
+      "nearest_opposite": {
+        "csv_row": 36763,
+        "std_distance": 1.2550719094203135,
+        "n_features_differ": 27,
+        "top_diffs": [
+          {
+            "feature": "sq_residual_abs_sum_w100",
+            "err_val": 49253.5,
+            "nbr_val": 1944.0,
+            "delta": -47309.5
+          },
+          {
+            "feature": "sq_circ_diff",
+            "err_val": 214.0,
+            "nbr_val": 191.0,
+            "delta": -23.0
+          },
+          {
+            "feature": "st_injected_count_w100",
+            "err_val": 79.0,
+            "nbr_val": 87.0,
+            "delta": 8.0
+          },
+          {
+            "feature": "st_change_count_w100",
+            "err_val": 79.0,
+            "nbr_val": 87.0,
+            "delta": 8.0
+          }
+        ]
+      }
+    },
+    {
+      "csv_row": 452,
+      "kind": "FP",
+      "score": 0.983,
+      "stNum": 24,
+      "sqNum": 0,
+      "exact_group_size": 1,
+      "exact_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "exact_collision": false,
+      "tol_group_size": 1,
+      "tol_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "tol_collision": false,
+      "nearest_opposite": {
+        "csv_row": 443,
+        "std_distance": 5.42345489108934,
+        "n_features_differ": 24,
+        "top_diffs": [
+          {
+            "feature": "ctx_lower_stnum_next3",
+            "err_val": 0.0,
+            "nbr_val": 1.0,
+            "delta": 1.0
+          },
+          {
+            "feature": "ctx_st_threads_w20",
+            "err_val": 3.0,
+            "nbr_val": 2.0,
+            "delta": -1.0
+          },
+          {
+            "feature": "stNum_diff_abs",
+            "err_val": 1.0,
+            "nbr_val": 2.0,
+            "delta": 1.0
+          },
+          {
+            "feature": "stNum_deviation",
+            "err_val": 0.5,
+            "nbr_val": 0.0,
+            "delta": -0.5
+          }
+        ]
+      }
+    },
+    {
+      "csv_row": 537492,
+      "kind": "FP",
+      "score": 0.984,
+      "stNum": 1460,
+      "sqNum": 27,
+      "exact_group_size": 1,
+      "exact_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "exact_collision": false,
+      "tol_group_size": 1,
+      "tol_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "tol_collision": false,
+      "nearest_opposite": {
+        "csv_row": 537490,
+        "std_distance": 0.8027121146997326,
+        "n_features_differ": 13,
+        "top_diffs": [
+          {
+            "feature": "sq_frac_backwards",
+            "err_val": 0.1,
+            "nbr_val": 0.2,
+            "delta": 0.1
+          },
+          {
+            "feature": "time_delta_zscore",
+            "err_val": 2.366263329111399,
+            "nbr_val": 2.08944088885437,
+            "delta": -0.2768224402570292
+          },
+          {
+            "feature": "time_delta",
+            "err_val": 0.3519620895385742,
+            "nbr_val": 0.7856290340423584,
+            "delta": 0.4336669445037842
+          },
+          {
+            "feature": "sq_frac_gt1",
+            "err_val": 0.0,
+            "nbr_val": 0.1,
+            "delta": 0.1
+          }
+        ]
+      }
+    },
+    {
+      "csv_row": 520718,
+      "kind": "FP",
+      "score": 0.9765,
+      "stNum": 1412,
+      "sqNum": 17,
+      "exact_group_size": 1,
+      "exact_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "exact_collision": false,
+      "tol_group_size": 1,
+      "tol_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "tol_collision": false,
+      "nearest_opposite": {
+        "csv_row": 520724,
+        "std_distance": 0.407529178921242,
+        "n_features_differ": 13,
+        "top_diffs": [
+          {
+            "feature": "sqNum_consistency",
+            "err_val": 0.6,
+            "nbr_val": 0.5,
+            "delta": -0.09999999999999998
+          },
+          {
+            "feature": "sq_frac_pos1",
+            "err_val": 0.6,
+            "nbr_val": 0.5,
+            "delta": -0.09999999999999998
+          },
+          {
+            "feature": "time_delta_zscore",
+            "err_val": 0.8344860931942694,
+            "nbr_val": 0.9056662495967356,
+            "delta": 0.07118015640246622
+          },
+          {
+            "feature": "sq_incons_count_w100",
+            "err_val": 27.0,
+            "nbr_val": 30.0,
+            "delta": 3.0
+          }
+        ]
+      }
+    },
+    {
+      "csv_row": 858524,
+      "kind": "FP",
+      "score": 0.9013,
+      "stNum": 2327,
+      "sqNum": 4,
+      "exact_group_size": 1,
+      "exact_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "exact_collision": false,
+      "tol_group_size": 1,
+      "tol_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "tol_collision": false,
+      "nearest_opposite": {
+        "csv_row": 779677,
+        "std_distance": 3.8284484259426805,
+        "n_features_differ": 33,
+        "top_diffs": [
+          {
+            "feature": "sq_jump_gt1_abs_flag",
+            "err_val": 1.0,
+            "nbr_val": 0.0,
+            "delta": -1.0
+          },
+          {
+            "feature": "sq_incons_flag",
+            "err_val": 1.0,
+            "nbr_val": 0.0,
+            "delta": -1.0
+          },
+          {
+            "feature": "ctx_st_back_count_w20",
+            "err_val": 6.0,
+            "nbr_val": 2.0,
+            "delta": -4.0
+          },
+          {
+            "feature": "sq_circ_diff_std_w100",
+            "err_val": 78.61671436646161,
+            "nbr_val": 44.4372034505444,
+            "delta": -34.179510915917206
+          }
+        ]
+      }
+    },
+    {
+      "csv_row": 562894,
+      "kind": "FP",
+      "score": 0.9727,
+      "stNum": 1533,
+      "sqNum": 17,
+      "exact_group_size": 1,
+      "exact_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "exact_collision": false,
+      "tol_group_size": 1,
+      "tol_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "tol_collision": false,
+      "nearest_opposite": {
+        "csv_row": 562900,
+        "std_distance": 0.4074897168238659,
+        "n_features_differ": 13,
+        "top_diffs": [
+          {
+            "feature": "sqNum_consistency",
+            "err_val": 0.6,
+            "nbr_val": 0.5,
+            "delta": -0.09999999999999998
+          },
+          {
+            "feature": "sq_frac_pos1",
+            "err_val": 0.6,
+            "nbr_val": 0.5,
+            "delta": -0.09999999999999998
+          },
+          {
+            "feature": "time_delta_zscore",
+            "err_val": 0.8284828982449745,
+            "nbr_val": 0.8995926902928562,
+            "delta": 0.0711097920478817
+          },
+          {
+            "feature": "sq_incons_count_w100",
+            "err_val": 26.0,
+            "nbr_val": 29.0,
+            "delta": 3.0
+          }
+        ]
+      }
+    },
+    {
+      "csv_row": 901771,
+      "kind": "FP",
+      "score": 0.9665,
+      "stNum": 2442,
+      "sqNum": 17,
+      "exact_group_size": 1,
+      "exact_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "exact_collision": false,
+      "tol_group_size": 1,
+      "tol_class_counts": {
+        "legit": 1,
+        "attack": 0
+      },
+      "tol_collision": false,
+      "nearest_opposite": {
+        "csv_row": 901777,
+        "std_distance": 0.4074766685364901,
+        "n_features_differ": 13,
+        "top_diffs": [
+          {
+            "feature": "sqNum_consistency",
+            "err_val": 0.6,
+            "nbr_val": 0.5,
+            "delta": -0.09999999999999998
+          },
+          {
+            "feature": "sq_frac_pos1",
+            "err_val": 0.6,
+            "nbr_val": 0.5,
+            "delta": -0.09999999999999998
+          },
+          {
+            "feature": "time_delta_zscore",
+            "err_val": 0.8262007715469238,
+            "nbr_val": 0.8972875867782285,
+            "delta": 0.07108681523130467
+          },
+          {
+            "feature": "sq_incons_count_w100",
+            "err_val": 26.0,
+            "nbr_val": 29.0,
+            "delta": 3.0
+          }
+        ]
+      }
+    },
+    {
+      "csv_row": 113801,
+      "kind": "FN",
+      "score": 0.1712,
+      "stNum": 330,
+      "sqNum": 5,
+      "exact_group_size": 1,
+      "exact_class_counts": {
+        "legit": 0,
+        "attack": 1
+      },
+      "exact_collision": false,
+      "tol_group_size": 1,
+      "tol_class_counts": {
+        "legit": 0,
+        "attack": 1
+      },
+      "tol_collision": false,
+      "nearest_opposite": {
+        "csv_row": 114934,
+        "std_distance": 1.961965270647389,
+        "n_features_differ": 31,
+        "top_diffs": [
+          {
+            "feature": "st_change_rate",
+            "err_val": 0.6,
+            "nbr_val": 0.3,
+            "delta": -0.3
+          },
+          {
+            "feature": "sq_frac_pos1",
+            "err_val": 0.2,
+            "nbr_val": 0.5,
+            "delta": 0.3
+          },
+          {
+            "feature": "sqNum_consistency",
+            "err_val": 0.2,
+            "nbr_val": 0.5,
+            "delta": 0.3
+          },
+          {
+            "feature": "sq_frac_gt1",
+            "err_val": 0.8,
+            "nbr_val": 0.5,
+            "delta": -0.30000000000000004
+          }
+        ]
+      }
+    },
+    {
+      "csv_row": 4475,
+      "kind": "FN",
+      "score": 0.3284,
+      "stNum": 39,
+      "sqNum": 798,
+      "exact_group_size": 1,
+      "exact_class_counts": {
+        "legit": 0,
+        "attack": 1
+      },
+      "exact_collision": false,
+      "tol_group_size": 1,
+      "tol_class_counts": {
+        "legit": 0,
+        "attack": 1
+      },
+      "tol_collision": false,
+      "nearest_opposite": {
+        "csv_row": 659,
+        "std_distance": 4.013420802116454,
+        "n_features_differ": 22,
+        "top_diffs": [
+          {
+            "feature": "st_injected_count_w100",
+            "err_val": 50.0,
+            "nbr_val": 0.0,
+            "delta": -50.0
+          },
+          {
+            "feature": "st_change_count_w100",
+            "err_val": 50.0,
+            "nbr_val": 0.0,
+            "delta": -50.0
+          },
+          {
+            "feature": "st_change_rate_w100",
+            "err_val": 0.5,
+            "nbr_val": 0.0,
+            "delta": -0.5
+          },
+          {
+            "feature": "sqNum_consistency",
+            "err_val": 0.2,
+            "nbr_val": 0.7,
+            "delta": 0.49999999999999994
+          }
+        ]
+      }
+    }
+  ],
+  "representation_injectivity": {
+    "unique_53feature_vectors": 1005534,
+    "corpus_rows": 1005534,
+    "rows_in_any_exact_duplicate_group": 0,
+    "note": "The full 53-feature representation is injective: every row has a unique vector, so 0 opposite-class exact/tolerance collisions is a property of the representation being unique-per-row (rolling/window features encode stream-position history), NOT a clean semantic margin. The substantive measure is the per-error nearest-opposite-class distance."
+  },
+  "raw_key_contrast": {
+    "key": "(stNum,sqNum)",
+    "mixed_class_groups": 146774,
+    "note": "Under the raw protocol key the classes collide massively (146,774 mixed groups, 88.6% of attack rows); the engineered windowed features recover separation only via history encoding."
+  },
+  "interpretation": "Residual errors are NOT irreducible under the full representation in the strict collision sense (all rows unique; 0 opposite-class collisions exact and at 6 sig figs). But every one of the 10 errors is a near-boundary point: nearest opposite-class publication is 0.41-5.42 std away, differing only in fine-grained windowed features (e.g. sq_incons_count_w100 by 3, sqNum_consistency/sq_frac_pos1 by 0.1). The four interleaved-duplicate FP sit at ~0.41 std from their nearest attack neighbour. So the errors are separable in principle but with a thin margin carried by high-variance history-dependent statistics, not by any robust protocol-level discriminant. The raw-key collinearity ceiling (Prompt 4) is the honest statement of what the protocol observables cannot distinguish; feature engineering adds only fragile stream-position separation."
+}
