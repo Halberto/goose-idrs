@@ -1,0 +1,8 @@
+{
+  "attack_rows": 165660,
+  "reconstructed_blocks": 1626,
+  "starts_in_test": 467,
+  "blocks_with_frame_in_test": 1245,
+  "blocks_fragmented": 1090,
+  "method": "sort by csv_row, join sqNum, block breaks on stNum change or sqNum not +1"
+}
