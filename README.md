@@ -31,7 +31,7 @@ To augment the data, run the `augmentation_framework.ipynb` notebook located in 
 The `notebook` directory contains two main notebooks for modeling and analysis:
 
 1. **`Lightgbm&XAI.ipynb`**: This notebook trains a LightGBM model on the augmented data and provides explainable AI (XAI) insights into the model's predictions.
-2. **`Nordsec.ipynb`**: This notebook explores different models and techniques for intrusion detection.
+2. **`Models.ipynb`**: This notebook explores different models and techniques for intrusion detection.
 
 To run these notebooks, start Jupyter Notebook or JupyterLab from the root directory of the project and open the notebooks from the `notebook` directory.
 
