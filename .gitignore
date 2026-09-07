@@ -11,3 +11,9 @@ notebook/*.pkl
 notebook/*.joblib
 notebook/models/
 notebook/goose_scaler.joblib
+
+# Environments, logs, notebook checkpoints (added for corrected-corpus branch)
+.venv/
+venv/
+*.log
+**/.ipynb_checkpoints/
