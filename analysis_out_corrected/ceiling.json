@@ -1,0 +1,15 @@
+{
+  "corpus_rows": 1005534,
+  "legit_rows": 839874,
+  "attack_rows": 165660,
+  "keys_total": 858760,
+  "keys_both_class": 146774,
+  "rows_on_shared_key": 293548,
+  "rows_on_shared_key_pct": 29.193244584469547,
+  "attack_rows_on_shared_key": 146774,
+  "attack_shared_pct": 88.5995412290233,
+  "legit_rows_on_shared_key": 146774,
+  "legit_shared_pct": 17.475716595584576,
+  "residual_errors": 10,
+  "errors_on_shared_key": 10
+}

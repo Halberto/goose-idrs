@@ -1,0 +1,63 @@
+{
+  "base_capture_columns": [
+    "allData",
+    "appid",
+    "confRev",
+    "datSet",
+    "dst",
+    "goID",
+    "gocbRef",
+    "length",
+    "ndsCom",
+    "numDatSetEntries",
+    "reserved1",
+    "reserved2",
+    "sqNum",
+    "src",
+    "stNum",
+    "timeAllowedtoLive",
+    "timestamp",
+    "utcTime"
+  ],
+  "augmented_columns": [
+    "label",
+    "allData",
+    "sqNum",
+    "stNum",
+    "timestamp",
+    "utcTime"
+  ],
+  "dropped": [
+    "appid",
+    "confRev",
+    "datSet",
+    "dst",
+    "goID",
+    "gocbRef",
+    "length",
+    "ndsCom",
+    "numDatSetEntries",
+    "reserved1",
+    "reserved2",
+    "src",
+    "timeAllowedtoLive"
+  ],
+  "identity_fields": {
+    "src": {
+      "in_base": true,
+      "in_augmented": false
+    },
+    "appid": {
+      "in_base": true,
+      "in_augmented": false
+    },
+    "gocbRef": {
+      "in_base": true,
+      "in_augmented": false
+    },
+    "confRev": {
+      "in_base": true,
+      "in_augmented": false
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "frame_recall": 0.9999597569318684,
+  "frame_TP": 49696,
+  "frame_FN": 2,
+  "episode_recall": 1.0,
+  "episode_present": 1245,
+  "episode_detected": 1245,
+  "onset_in_test": 467,
+  "onset_below_threshold": 0,
+  "onset_blind_spot_survives": false
+}
