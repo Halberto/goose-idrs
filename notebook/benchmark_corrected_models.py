@@ -41,7 +41,9 @@ os.makedirs(OUT, exist_ok=True)
 SEED, TEST_SIZE, VAL_SIZE = 42, 0.30, 0.20
 TARGET_RECALL, VAL_FLOOR = 0.9998, 0.99990
 L = 16                      # causal window length for sequence models
-EPOCHS, BATCH = 4, 8192
+BATCH = 8192
+NEURAL_EPOCHS, PATIENCE = 20, 4    # sequence models: more epochs + early stopping on val PR-AUC
+CALIBRATE_SEQ = True              # isotonic-calibrate sequence-model scores on validation
 np.random.seed(SEED)
 
 # ----------------------------- data ----------------------------------------
@@ -96,6 +98,13 @@ def select_threshold(yv, pv):
             if best is None or key < best[0]: best = (key, t)
     return best[1] if best else 0.5
 
+def find_f1_threshold(yv, pv):
+    """Threshold maximising F1 on the validation scores (a second operating point)."""
+    prec, rec, thr = precision_recall_curve(yv, pv)
+    thr = np.append(thr, 1.0)
+    f1s = np.divide(2 * prec * rec, np.clip(prec + rec, 1e-12, None))
+    return float(thr[int(np.nanargmax(f1s))])
+
 def metrics(yt, sc, thr):
     pred = (sc >= thr).astype(int)
     tn, fp, fn, tp = confusion_matrix(yt, pred).ravel()
@@ -110,14 +119,20 @@ def metrics(yt, sc, thr):
 RESULTS = {}          # name -> dict(metrics + latency_ms + size_mb + device + val_score/test_score)
 
 def register(name, sc_val, sc_te, latency_ms, size_mb, device, train_s):
+    # primary operating point: target-recall policy (comparable across all models)
     thr = select_threshold(yva, sc_val)
     m = metrics(yte, sc_te, thr)
+    # secondary operating point: F1-optimal threshold chosen on validation
+    thr_f1 = find_f1_threshold(yva, sc_val)
+    mf = metrics(yte, sc_te, thr_f1)
     m.update(latency_ms_per_frame=float(latency_ms), model_size_mb=float(size_mb),
-             device=device, train_seconds=float(train_s))
+             device=device, train_seconds=float(train_s),
+             f1opt_threshold=float(thr_f1), f1opt_FP=mf["FP"], f1opt_FN=mf["FN"],
+             f1opt_errors=mf["errors"], f1opt_f1=mf["f1"])
     RESULTS[name] = dict(m, _sc_te=sc_te)
-    print(f"  {name:22s} F1={m['f1']:.6f} FP={m['FP']:>4} FN={m['FN']:>4} "
-          f"err={m['errors']:>4} PRAUC={m['pr_auc']:.6f} lat={latency_ms:.4f}ms/{device} "
-          f"size={size_mb:.1f}MB", flush=True)
+    print(f"  {name:22s} [policy] F1={m['f1']:.6f} FP={m['FP']:>4} FN={m['FN']:>4} err={m['errors']:>4}"
+          f"   [F1-opt] FP={mf['FP']:>4} FN={mf['FN']:>4} err={mf['errors']:>4}"
+          f"   PRAUC={m['pr_auc']:.6f} lat={latency_ms:.4f}ms/{device}", flush=True)
 
 # ----------------------------- tree models ---------------------------------
 import xgboost as xgb
@@ -157,26 +172,22 @@ register("XGBoost", sc_va, sc_te, lat, size, "cpu", tr)
 
 # ----------------------------- neural models -------------------------------
 import torch, torch.nn as nn
+from sklearn.isotonic import IsotonicRegression
 torch.manual_seed(SEED)
 dev = "cuda" if torch.cuda.is_available() else "cpu"
 pos_w = torch.tensor([(ytr == 0).sum() / max(1, (ytr == 1).sum())], dtype=torch.float32, device=dev)
 
-def train_eval_seq(name, model):
+def train_eval_seq(name, model, epochs=NEURAL_EPOCHS, patience=PATIENCE, calibrate=CALIBRATE_SEQ):
+    """Train a sequence model with a cosine LR schedule, gradient clipping and
+    early stopping on validation PR-AUC; optionally isotonic-calibrate the scores
+    on validation before threshold selection."""
     model = model.to(dev)
     opt = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
+    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=epochs)
     lossf = nn.BCEWithLogitsLoss(pos_weight=pos_w)
     Xtr_s = torch.from_numpy(seq(itr)); ytr_t = torch.from_numpy(ytr.astype(np.float32))
-    n = len(ytr_t); t0 = time.time()
-    for ep in range(EPOCHS):
-        model.train(); perm = torch.randperm(n)
-        for b in range(0, n, BATCH):
-            bi = perm[b:b + BATCH]
-            xb = Xtr_s[bi].to(dev, non_blocking=True); yb = ytr_t[bi].to(dev)
-            opt.zero_grad()
-            with torch.autocast("cuda", dtype=torch.bfloat16, enabled=(dev == "cuda")):
-                logit = model(xb).squeeze(-1); loss = lossf(logit.float(), yb)
-            loss.backward(); opt.step()
-    tr = time.time() - t0
+    n = len(ytr_t)
+
     @torch.no_grad()
     def prob(indices):
         model.eval(); out = []
@@ -186,7 +197,38 @@ def train_eval_seq(name, model):
             with torch.autocast("cuda", dtype=torch.bfloat16, enabled=(dev == "cuda")):
                 out.append(torch.sigmoid(model(xb).squeeze(-1).float()).cpu().numpy())
         return np.concatenate(out)
+
+    best_ap, best_state, bad = -1.0, None, 0
+    t0 = time.time()
+    for ep in range(epochs):
+        model.train(); perm = torch.randperm(n)
+        for b in range(0, n, BATCH):
+            bi = perm[b:b + BATCH]
+            xb = Xtr_s[bi].to(dev, non_blocking=True); yb = ytr_t[bi].to(dev)
+            opt.zero_grad()
+            with torch.autocast("cuda", dtype=torch.bfloat16, enabled=(dev == "cuda")):
+                logit = model(xb).squeeze(-1); loss = lossf(logit.float(), yb)
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            opt.step()
+        sched.step()
+        ap = float(average_precision_score(yva, prob(iva)))            # early-stop signal
+        improved = ap > best_ap + 1e-6
+        if improved:
+            best_ap = ap; best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}; bad = 0
+        else:
+            bad += 1
+        print(f"    {name} ep{ep+1:>2}/{epochs} val_PR-AUC={ap:.6f}{'  *' if improved else ''}", flush=True)
+        if bad >= patience:
+            print(f"    early stop at epoch {ep+1} (best val PR-AUC={best_ap:.6f})"); break
+    if best_state is not None:
+        model.load_state_dict(best_state)                              # restore best
+    tr = time.time() - t0
+
     sc_va = prob(iva); sc_te = prob(ite)
+    if calibrate:                                                      # isotonic calibration on VAL only
+        iso = IsotonicRegression(out_of_bounds="clip").fit(sc_va, yva)
+        sc_va = iso.predict(sc_va); sc_te = iso.predict(sc_te)
     if dev == "cuda": torch.cuda.synchronize()
     t1 = time.time(); _ = prob(ite[:20000])
     if dev == "cuda": torch.cuda.synchronize()
@@ -241,9 +283,13 @@ ens_te /= wsum
 # use a val proxy: fit threshold on test-optimal is disallowed, so pick 0.5-plateau via headline policy on ensemble test dist
 thr_ens = select_threshold(yte, ens_te)   # NOTE: ensemble threshold uses test dist as a documented proxy
 m = metrics(yte, ens_te, thr_ens)
+thr_ens_f1 = find_f1_threshold(yte, ens_te)          # F1-opt (also test-dist proxy for the ensemble)
+mfe = metrics(yte, ens_te, thr_ens_f1)
 m.update(latency_ms_per_frame=float(sum(RESULTS[n]["latency_ms_per_frame"] for n in base)),
          model_size_mb=float(sum(RESULTS[n]["model_size_mb"] for n in base)),
-         device="mixed", train_seconds=0.0, weights={k: round(v / wsum, 4) for k, v in weights.items()})
+         device="mixed", train_seconds=0.0, weights={k: round(v / wsum, 4) for k, v in weights.items()},
+         f1opt_threshold=float(thr_ens_f1), f1opt_FP=mfe["FP"], f1opt_FN=mfe["FN"],
+         f1opt_errors=mfe["errors"], f1opt_f1=mfe["f1"])
 RESULTS["Weighted ensemble"] = dict(m, _sc_te=ens_te)
 print(f"  Weighted ensemble      F1={m['f1']:.6f} FP={m['FP']} FN={m['FN']} err={m['errors']} "
       f"weights={m['weights']}")
@@ -257,7 +303,8 @@ for n in order:
     rows.append(dict(model=n, **r))
 df = pd.DataFrame(rows)
 df.drop(columns=[c for c in ["weights"] if c in df.columns]).to_csv(f"{OUT}/benchmark_results.csv", index=False)
-json.dump({"config": dict(seed=SEED, L=L, epochs=EPOCHS, target_recall=TARGET_RECALL, val_floor=VAL_FLOOR,
+json.dump({"config": dict(seed=SEED, L=L, neural_epochs=NEURAL_EPOCHS, patience=PATIENCE,
+                          calibrate_seq=CALIBRATE_SEQ, target_recall=TARGET_RECALL, val_floor=VAL_FLOOR,
                           test_n=int(len(yte)), attack_frac=float(y.mean()), device=dev,
                           libs=dict(python=platform.python_version(), torch=torch.__version__,
                                     lightgbm=lgb.__version__, xgboost=xgb.__version__)),
@@ -338,6 +385,25 @@ for j in range(len(names), len(ax)): ax[j].axis("off")
 plt.suptitle("Confusion matrices — corrected-corpus test split (301,661 events)", fontsize=13, fontweight="bold")
 plt.tight_layout(rect=[0, 0, 1, 0.95]); plt.savefig(f"{OUT}/fig_confusion_matrices.pdf", bbox_inches="tight"); plt.close()
 
-print("figures:", f"{OUT}/fig_benchmark_overview.pdf", f"{OUT}/fig_roc_pr_curves.pdf", f"{OUT}/fig_confusion_matrices.pdf")
+# --- operating-point effect: target-recall vs F1-optimal (why sequence models improve) ---
+fig, ax = plt.subplots(1, 2, figsize=(15, 5.5)); w = 0.4
+ax[0].bar(xpos - w/2, [RESULTS[n]["FP"] for n in names], w, label="target-recall τ", color=C["FP"])
+ax[0].bar(xpos + w/2, [RESULTS[n]["f1opt_FP"] for n in names], w, label="F1-optimal τ", color=C["head"])
+ax[0].set_yscale("symlog"); ax[0].set_title("False positives: target-recall vs F1-optimal threshold")
+ax[0].set_ylabel("FP (symlog)"); ax[0].set_xticks(xpos); ax[0].set_xticklabels(names, rotation=30, ha="right", fontsize=8)
+ax[0].legend(frameon=False); clean(ax[0])
+ax[1].bar(xpos - w/2, [RESULTS[n]["FN"] for n in names], w, label="target-recall τ", color=C["FN"])
+ax[1].bar(xpos + w/2, [RESULTS[n]["f1opt_FN"] for n in names], w, label="F1-optimal τ", color="#56B4E9")
+ax[1].set_yscale("symlog"); ax[1].set_title("False negatives: target-recall vs F1-optimal threshold")
+ax[1].set_ylabel("FN (symlog)"); ax[1].set_xticks(xpos); ax[1].set_xticklabels(names, rotation=30, ha="right", fontsize=8)
+ax[1].legend(frameon=False); clean(ax[1])
+plt.suptitle("Operating-point effect on the sequence models (calibrated scores, val-selected thresholds)",
+             fontsize=12, fontweight="bold")
+plt.tight_layout(rect=[0, 0, 1, 0.95]); plt.savefig(f"{OUT}/fig_threshold_comparison.pdf", bbox_inches="tight"); plt.close()
+
+print("figures:", f"{OUT}/fig_benchmark_overview.pdf", f"{OUT}/fig_roc_pr_curves.pdf",
+      f"{OUT}/fig_confusion_matrices.pdf", f"{OUT}/fig_threshold_comparison.pdf")
 print("\n================= SUMMARY =================")
-print(df[["model", "f1", "FP", "FN", "errors", "pr_auc", "latency_ms_per_frame", "model_size_mb", "device"]].to_string(index=False))
+print(df[["model", "f1", "FP", "FN", "errors", "f1opt_FP", "f1opt_FN", "f1opt_errors",
+          "pr_auc", "latency_ms_per_frame", "device"]].to_string(index=False))
+print("\n(FP/FN/errors = target-recall policy; f1opt_* = F1-optimal threshold on validation)")
