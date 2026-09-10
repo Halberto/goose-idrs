@@ -1,0 +1,53 @@
+% ---------------------------------------------------------------------------
+% Corrected Table 7.10 — model comparison on the corrected corpus.
+% Source: notebook/benchmark_corrected_models.py (branch corrected-corpus).
+% One policy for every row: target-recall operating point, thresholds selected
+% on validation. Errors = FP + FN is the primary metric.
+%
+% STATUS:
+%   - LightGBM / XGBoost / Random Forest rows: FINAL.
+%   - GRU / Mamba / Transformer / Weighted ensemble rows (daggered): PROVISIONAL,
+%     pending the early-stopped, uniform-policy (CALIBRATE_SEQ=False) re-run.
+%     Replace the daggered cells with that run's benchmark_results.json values.
+% ---------------------------------------------------------------------------
+\begin{table}[htbp]
+\centering
+\caption[Corrected-corpus model comparison]{%
+Model comparison on the corrected corpus. Every model is evaluated on the same
+stratified row-level test split ($n=301{,}661$; $30\%$; seed~42) using the same
+corrected 53-feature representation, and every threshold is selected on the
+\emph{validation} partition (never on test) under one policy: the
+target-recall operating point with a recall floor of $0.9998$ and a validation
+margin of $0.99990$. \emph{Errors} $=\mathrm{FP}+\mathrm{FN}$ is the primary
+metric; $F_1$ is shown to four decimals for reference. Paired McNemar tests on
+these predictions find LightGBM and XGBoost statistically indistinguishable
+($p=0.18$), while both differ significantly from Random Forest and the sequence
+families ($p<10^{-4}$); the LightGBM selection therefore rests on latency,
+explainability and monotone-constraint support rather than a significant
+accuracy margin. The LightGBM row is the retained ensemble at the uniform
+policy; its deployment operating point (Figure~\ref{fig:corrected-cm},
+$\tau=0.7337$) gives $8$~FP and $2$~FN---the same ten-error plateau. Inference
+latency is measured on this corrected 53-feature configuration (tree models on
+CPU, sequence models on GPU) and supersedes the archived timings; \emph{Size} is
+the serialised model size. Daggered rows are provisional pending the
+properly-trained, uniform-policy re-run of the sequence models.}
+\label{tab:corrected-model-comparison}
+\begin{tabular}{lrrrrrr}
+\toprule
+Model & $F_1$ (\%) & FP & FN & Errors & Latency (ms) & Size (MB)\\
+\midrule
+LightGBM (ensemble)      & 99.9899 & 7    & 3   & \textbf{10} & 0.012  & 26.7\\
+XGBoost                  & 99.9849 & 10   & 5   & 15          & 0.0005 & 0.9\\
+Random Forest            & 99.9608 & 36   & 3   & 39          & 0.0018 & 10.7\\
+\midrule
+Mamba$^{\dagger}$        & 99.14   & 858  & 2   & 860         & 0.006  & 0.3\\
+Transformer$^{\dagger}$  & 97.90   & 2130 & 6   & 2136        & 0.003  & 0.4\\
+GRU$^{\dagger}$          & 95.88   & 4261 & 7   & 4268        & 0.002  & 0.1\\
+Weighted ensemble$^{\dagger}$ & 99.91 & 89 & 4 & 93          & ---    & ---\\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+{\footnotesize $^{\dagger}$Provisional: from an under-trained sequence-model run;
+to be refreshed from the early-stopped, uniform-policy re-run before submission.}
+\end{table}
