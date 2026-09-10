@@ -1,0 +1,103 @@
+{
+  "policy": {
+    "target_recall": 0.9998,
+    "val_floor": 0.9999,
+    "test_n": 301661,
+    "feature_count": 53,
+    "simple_features": [
+      "sqNum",
+      "stNum",
+      "time_delta",
+      "sqNum_diff",
+      "stNum_diff",
+      "time_delta_zscore"
+    ]
+  },
+  "operating_points": {
+    "LightGBM": {
+      "threshold": 0.7952652533206374,
+      "TN": 251956,
+      "FP": 7,
+      "FN": 3,
+      "TP": 49695,
+      "errors": 10
+    },
+    "XGBoost": {
+      "threshold": 0.4418429732322693,
+      "TN": 251953,
+      "FP": 10,
+      "FN": 5,
+      "TP": 49693,
+      "errors": 15
+    },
+    "RandomForest": {
+      "threshold": 0.38199531262252323,
+      "TN": 251927,
+      "FP": 36,
+      "FN": 3,
+      "TP": 49695,
+      "errors": 39
+    }
+  },
+  "mcnemar": {
+    "LightGBM_vs_XGBoost": {
+      "b_AwrongBright": 2,
+      "c_ArightBwrong": 7,
+      "discordant": 9,
+      "p_exact": 0.1796875,
+      "chi2_cc": 1.7777777777777777,
+      "p_chi2": 0.18242243945173195
+    },
+    "LightGBM_vs_RandomForest": {
+      "b_AwrongBright": 2,
+      "c_ArightBwrong": 31,
+      "discordant": 33,
+      "p_exact": 1.3085082173347473e-07,
+      "chi2_cc": 23.757575757575758,
+      "p_chi2": 1.0926445169555432e-06
+    },
+    "XGBoost_vs_RandomForest": {
+      "b_AwrongBright": 5,
+      "c_ArightBwrong": 29,
+      "discordant": 34,
+      "p_exact": 3.8558151572942734e-05,
+      "chi2_cc": 15.558823529411764,
+      "p_chi2": 7.997751280618723e-05
+    }
+  },
+  "ablation": {
+    "xgboost_6feat": {
+      "threshold": 0.1025383397936821,
+      "TN": 251492,
+      "FP": 471,
+      "FN": 8,
+      "TP": 49690,
+      "errors": 479
+    },
+    "xgboost_53feat": {
+      "threshold": 0.4418429732322693,
+      "TN": 251953,
+      "FP": 10,
+      "FN": 5,
+      "TP": 49693,
+      "errors": 15
+    },
+    "lightgbm_6feat": {
+      "threshold": 0.051970381919271044,
+      "TN": 251430,
+      "FP": 533,
+      "FN": 7,
+      "TP": 49691,
+      "errors": 540
+    },
+    "lightgbm_53feat": {
+      "threshold": 0.15436408878031677,
+      "TN": 251950,
+      "FP": 13,
+      "FN": 0,
+      "TP": 49698,
+      "errors": 13
+    }
+  },
+  "note_301642": "Models.ipynb neural block uses SEQUENCE_LENGTH=20; test sequences = 301661-19 = 301642 (windowing edge, benign)."
+}
